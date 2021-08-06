@@ -1,5 +1,6 @@
 package com.asad.contactsdirectory.di.module
 
+import com.asad.contactsdirectory.BuildConfig
 import com.asad.contactsdirectory.data.local.prefs.PreferencesHelper
 import com.asad.contactsdirectory.data.remote.AppService
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
@@ -19,8 +20,7 @@ class ApiModule {
     @Provides
     fun provideRetrofitService(preferencesHelper: PreferencesHelper): AppService =
         Retrofit.Builder()
-//            .baseUrl(BuildConfig.BASE_URL_API)
-            .baseUrl("https://run.mocky.io/v3/")
+            .baseUrl(BuildConfig.BaseApiUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .client(ApiHttpClient().getHTTPClient(preferencesHelper))

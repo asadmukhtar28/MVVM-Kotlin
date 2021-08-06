@@ -44,10 +44,10 @@ android {
     }
     productFlavors {
         stagging {
-//            buildConfigField("String", "BaseApiUrl", StaggingBaseApiUrl)
+            buildConfigField("String", "BaseApiUrl", staggingBaseApiUrl)
         }
         production {
-//            buildConfigField("String", "BaseApiUrl", ProductionBaseApiUrl)
+            buildConfigField("String", "BaseApiUrl", productionBaseApiUrl)
         }
     }
 }
