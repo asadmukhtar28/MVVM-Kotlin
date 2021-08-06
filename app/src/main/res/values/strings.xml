@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ContactsDirectory</string>
+    <string name="internet_error">The internet connection appears to be offline.</string>
+</resources>
