@@ -1,8 +1,8 @@
 package com.asad.contactsdirectory.interfaces
 
-interface AdapterUpdateListener {
+interface AdapterUpdateListener<T> {
     fun clearItems()
-    fun <T> addItems(items: List<T>, isLoadMore: Boolean = false)
-    fun <T> addItem(item: T) {}
+    fun addItems(items: List<T>, isLoadMore: Boolean = false)
+    fun addItem(item: T) {}
     fun removeItem(position: Int) {}
 }

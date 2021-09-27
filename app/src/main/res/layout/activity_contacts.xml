@@ -13,16 +13,17 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:background="@color/teal_200"
         tools:context=".ui.contacts.ContactsActivity">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_contacts"
-            addItems="@{viewModel.contactList}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="16dp"
             android:orientation="vertical"
+            app:addItems="@{viewModel.observableArrayList}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/btn_fetch_contacts"
             app:layout_constraintTop_toTopOf="parent" />

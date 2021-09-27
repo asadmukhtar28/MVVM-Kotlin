@@ -1,6 +1,5 @@
 package com.asad.contactsdirectory.ui.contacts.adapter
 
-import android.text.method.TextKeyListener.clear
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +10,7 @@ import com.asad.contactsdirectory.ui.base.BaseViewHolder
 import javax.inject.Inject
 
 class ContactsAdapter @Inject constructor() :
-    RecyclerView.Adapter<ContactsAdapter.ItemViewHolder>(), AdapterUpdateListener {
+    RecyclerView.Adapter<ContactsAdapter.ItemViewHolder>(), AdapterUpdateListener<ContactsModel> {
     val contactList = ArrayList<ContactsModel>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return ItemViewHolder(
@@ -36,15 +35,15 @@ class ContactsAdapter @Inject constructor() :
         notifyDataSetChanged()
     }
 
-    override fun <T> addItems(items: List<T>, isLoadMore: Boolean) {
+    override fun addItems(items: List<ContactsModel>, isLoadMore: Boolean) {
         if (!isLoadMore) {
+            clearItems()
             contactList.addAll(items as Collection<ContactsModel>)
             notifyDataSetChanged()
         }
     }
 
     inner class ItemViewHolder(val binding: ItemContactsBinding) : BaseViewHolder(binding.root) {
-
         override fun onBind(position: Int) {
             binding.viewModel = ContactsItemViewModel(contactList[position])
             binding.executePendingBindings()

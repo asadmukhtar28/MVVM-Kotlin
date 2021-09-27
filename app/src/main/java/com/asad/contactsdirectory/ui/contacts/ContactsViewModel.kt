@@ -1,6 +1,7 @@
 package com.asad.contactsdirectory.ui.contacts
 
 import android.util.Log
+import androidx.databinding.ObservableArrayList
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.asad.contactsdirectory.models.ContactsModel
@@ -8,6 +9,7 @@ import com.asad.contactsdirectory.models.base.State
 import com.asad.contactsdirectory.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -16,10 +18,18 @@ import javax.inject.Inject
 class ContactsViewModel @Inject constructor(var contactsRepository: ContactsRepository) :
     BaseViewModel<ContactsNavigator>(contactsRepository.dataManager) {
     val contactList = MutableLiveData<List<ContactsModel>>()
+    val observableArrayList = ObservableArrayList<ContactsModel>()
 
     fun fetchFromDbClick() {
+        if (observableArrayList.size > 0)
+            observableArrayList.clear()
+
         viewModelScope.launch {
             contactsRepository.fetchContactsFromDb().run {
+                /*
+                * Add a small delay to reflect the changes on the UI
+                */
+                delay(5)
                 if (this != null) {
                     if (this.isNotEmpty()) {
                         contactList.value = this
@@ -37,6 +47,9 @@ class ContactsViewModel @Inject constructor(var contactsRepository: ContactsRepo
     }
 
     private suspend fun makeApiCall() {
+        if (observableArrayList.size > 0)
+            observableArrayList.clear()
+
         withContext(viewModelScope.coroutineContext) {
             getNavigator()?.showProgressBar()
             when (val request = contactsRepository.fetchContacts()) {
@@ -44,7 +57,6 @@ class ContactsViewModel @Inject constructor(var contactsRepository: ContactsRepo
                     getNavigator()?.hideProgressBar()
                     request.wrapperData.data?.let {
                         if (it.isNotEmpty()) {
-                            Log.d("asad_async_call", "api call response")
                             contactList.value = it
                         } else {
                             getNavigator()?.showSuccessMessage("No Contacts Found")
@@ -52,8 +64,22 @@ class ContactsViewModel @Inject constructor(var contactsRepository: ContactsRepo
                     }
                 }
                 is State.Error -> {
+                    getNavigator()?.showErrorMessage(request.responseError.errorMessage)
                     getNavigator()?.hideProgressBar()
+
+                    resetData()
                 }
+            }
+        }
+    }
+
+    private fun resetData() {
+        /*
+        * Function to reset data back to View in case Api call fails
+        */
+        contactList.value?.let {
+            if (it.isNotEmpty()) {
+                observableArrayList.addAll(it)
             }
         }
     }
@@ -64,7 +90,6 @@ class ContactsViewModel @Inject constructor(var contactsRepository: ContactsRepo
                 viewModelScope.launch(Dispatchers.IO) {
                     dataManager.getDbHelper().deleteAllContacts()
                     dataManager.getDbHelper().insertContacts(it)
-                    Log.d("asad_async_call", "Insert Successfully")
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.asad.contactsdirectory.ui.contacts
 
+import android.util.Log
 import androidx.activity.viewModels
 import com.asad.contactsdirectory.BR
 import com.asad.contactsdirectory.R
@@ -23,5 +24,10 @@ class ContactsActivity :
     override fun initUi() {
         viewModel.setNavigator(this)
         bindings.rvContacts.adapter = adapter
+
+        viewModel.contactList.observe(this,
+            {
+                viewModel.observableArrayList.addAll(it)
+            })
     }
 }
